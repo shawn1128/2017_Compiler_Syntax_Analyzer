@@ -7,15 +7,15 @@
 	#define TOKENON 1
 	#define TOKENOFF 0
 
-	#define KEYWORD 0
-	#define IDENTIFIER 1
-	#define OPERATOR 2
-	#define PUNCTUATION 3
-	#define INTEGER 4
-	#define DOUBLE 5
-	#define CHAR 6
-	#define SCIENTIFIC 7
-	#define STRING 8
+	#define KEYWORD_L 0
+	#define IDENTIFIER_L 1
+	#define OPERATOR_L 2
+	#define PUNCTUATION_L 3
+	#define INTEGER_L 4
+	#define DOUBLE_L 5
+	#define CHAR_L 6
+	#define SCIENTIFIC_L 7
+	#define STRING_L 8
 
 	#include <stdio.h>
 	#include "y.tab.h"
@@ -108,22 +108,22 @@ STR \"((\\(n|t|\\|\"))|[^"\n])*\"
 
 
 
-{INT} {tokenType = INTEGER;
+{INT} {tokenType = INTEGER_L;
 		 store_text();
 	  	 print_token();
 		 return INT_P;
 		}
 
-{DOUBLE} {tokenType = DOUBLE;
+{DOUBLE} {tokenType = DOUBLE_L;
 		     store_text();
 		     print_token();
 			 return DOUBLE_P;}
-{SCIEN} {tokenType = SCIENTIFIC;
+{SCIEN} {tokenType = SCIENTIFIC_L;
 	 store_text();
 	 print_token();
-	 return SCIEN_P}
+	 return SCIEN_P;}
 
-{KEY}	{tokenType = KEYWORD;
+{KEY}	{tokenType = KEYWORD_L;
 	 store_text();
 	 print_token();
 	 if(strcmp(yytext, "void") == 0) return VOID;
@@ -131,7 +131,7 @@ STR \"((\\(n|t|\\|\"))|[^"\n])*\"
 	 if(strcmp(yytext, "double") == 0) return DOUBLE;
      if(strcmp(yytext, "bool") == 0) return BOOL;
      if(strcmp(yytext, "char") == 0) return CHAR;
-     if(strcmp(yytext, "null") == 0) return NULL;
+     if(strcmp(yytext, "null") == 0) return NUL;
      if(strcmp(yytext, "for") == 0) return FOR;
      if(strcmp(yytext, "while") == 0) return WHILE;
      if(strcmp(yytext, "do") == 0) return DO;
@@ -148,35 +148,35 @@ STR \"((\\(n|t|\\|\"))|[^"\n])*\"
      if(strcmp(yytext, "case") == 0) return CASE;
      if(strcmp(yytext, "default") == 0) return DEFAULT; }
 
-{ID} {tokenType = IDENTIFIER;
+{ID} {tokenType = IDENTIFIER_L;
 	store_text();
 	print_token();
-	return ID_P;}
+	return IDENTIFIER;}
 
-{OP} {tokenType = OPERATOR;
+{OP} {tokenType = OPERATOR_L;
 	store_text();
 	print_token();
-	if(strcmp(yytext, "+") == 0) return "+";
-	if(strcmp(yytext, "-") == 0) return "-";
-	if(strcmp(yytext, "*") == 0) return "*";
-	if(strcmp(yytext, "/") == 0) return "/";
-	if(strcmp(yytext, "%") == 0) return "%";
-	if(strcmp(yytext, "++") == 0) return "++";
-	if(strcmp(yytext, "--") == 0) return "--";
-	if(strcmp(yytext, "<") == 0) return "<";
-	if(strcmp(yytext, "<=") == 0) return "<=";
-	if(strcmp(yytext, ">") == 0) return ">";
-	if(strcmp(yytext, ">=") == 0) return ">=";
-	if(strcmp(yytext, "==") == 0) return "==";
-	if(strcmp(yytext, "!=") == 0) return "!=";
-	if(strcmp(yytext, "&&") == 0) return "&&";
-	if(strcmp(yytext, "||") == 0) return "||";
-	if(strcmp(yytext, "!") == 0) return "!";
-	if(strcmp(yytext, "&") == 0) return "&";
-	if(strcmp(yytext, "=") == 0) return "=";}
+	if(strcmp(yytext, "+") == 0) return PLUS;
+	if(strcmp(yytext, "-") == 0) return MINUS;
+	if(strcmp(yytext, "*") == 0) return MUL;
+	if(strcmp(yytext, "/") == 0) return DIV;
+	if(strcmp(yytext, "%") == 0) return MOD;
+	if(strcmp(yytext, "++") == 0) return PLUS2;
+	if(strcmp(yytext, "--") == 0) return MINUS2;
+	if(strcmp(yytext, "<") == 0) return SLT;
+	if(strcmp(yytext, "<=") == 0) return SLTE;
+	if(strcmp(yytext, ">") == 0) return BLT;
+	if(strcmp(yytext, ">=") == 0) return BLTE;
+	if(strcmp(yytext, "==") == 0) return EE;
+	if(strcmp(yytext, "!=") == 0) return NEQ;
+	if(strcmp(yytext, "&&") == 0) return AND2;
+	if(strcmp(yytext, "||") == 0) return OR2;
+	if(strcmp(yytext, "!") == 0) return N;
+	if(strcmp(yytext, "&") == 0) return '&';
+	if(strcmp(yytext, "=") == 0) return '=';}
 
 
-{PUNC} {tokenType = PUNCTUATION;
+{PUNC} {tokenType = PUNCTUATION_L;
 		 store_text();
 		 print_token();
 		 
@@ -193,15 +193,15 @@ STR \"((\\(n|t|\\|\"))|[^"\n])*\"
         if(strcmp(yytext, "?") == 0) return '?';}
 
 
-{CHAR}  {tokenType = CHAR;
+{CHAR}  {tokenType = CHAR_L;
 	 store_text();
 	 print_token();
-	 return CHAR_P}
+	 return CHAR_P;}
 
-{STR} { tokenType = STRING;
+{STR} { tokenType = STRING_L;
 	store_text();
 	print_token();
-	return STR_P
+	return STR_P;
 	}
 . {store_text();
    error_handling();}
@@ -241,7 +241,7 @@ void store_text(){
 
 void print_token(){
     if(tokenon == TOKENON){
-	if(tokenType == STRING){
+	if(tokenType == STRING_L){
 		strcpy(tmp_str, yytext+1);
 		tmp_str[yyleng-2] = 0;
 		//fprintf(fp,"#%s:%s\n", keyName[tokenType], tmp_str);
