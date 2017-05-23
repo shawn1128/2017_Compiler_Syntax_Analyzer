@@ -94,9 +94,10 @@ Main_Block: Dec
 			;
 			
 Statement: Simple_S
-		/*| Switch_S
+		| Switch_S
 		| While_S
-		| For_S*/
+		| For_S
+		| IF_S
 		| End_S
 		;
 		
@@ -110,9 +111,41 @@ Array_Exp: '[' Exp ']'
 		| Array_Exp '[' Exp ']'
 		;
 		
-//Switch_S: SWITCH '(' IDENTIFIER ')' '{'
+Switch_S: SWITCH '(' IDENTIFIER ')' '{' Switch_Cont '}'
+		;
+Switch_Cont: Case_L
+			| Case_L Default_Cont
+			;
+Case_L: Case_One
+		| Case_L Case_One
+		;
+		
+Case_One: CASE INT_P ':' Statement_Many
+		| CASE CHAR_P ':' Statement_Many
+		| CASE INT_P ':'
+		| CASE CHAR_P ':'
+		;
 
+Statement_Many: Statement
+				| Statement_Many Statement
+				;
+Default_Cont: DEFAULT ':' Statement_Many
+			| DEFAULT ':'
+			;
+			
+While_S: WHILE '(' Exp ')' Main_Content_Func
+		| DO Main_Content_Func WHILE '(' Exp ')'
+		;
+For_S: FOR '(' For_Exp For_Exp Exp')' Main_Content_Func
+		;
 
+For_Exp: ';'
+		| Exp ';'
+		;
+IF_S: IF '(' Exp ')' Main_Content_Func
+	| IF '(' Exp ')' Main_Content_Func ELSE Main_Content_Func
+	;
+		
 End_S: CONTINUE ';'
 	| BREAK ';'
 	| RETURN ';'
