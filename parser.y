@@ -134,7 +134,7 @@ Default_Cont: DEFAULT ':' Statement_Many
 			;
 			
 While_S: WHILE '(' Exp ')' Main_Content_Func
-		| DO Main_Content_Func WHILE '(' Exp ')'
+		| DO Main_Content_Func WHILE '(' Exp ')' ';'
 		;
 For_S: FOR '(' For_Exp For_Exp Exp')' Main_Content_Func
 		;
@@ -200,6 +200,8 @@ Left_Exp: Var
 		| CHAR_P
 		| SCIEN_P
 		| STR_P
+		| TRUE
+		| FALSE
 		| '(' Exp ')'
 		| IDENTIFIER '(' ')'
 		| IDENTIFIER '(' Exp_List ')';
